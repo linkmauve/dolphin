@@ -1,7 +1,7 @@
 set(NOGUI_SRCS Main.cpp)
 
 if(USE_X11)
-	set(NOGUI_SRCS ${NOGUI_SRCS} ../DolphinWX/X11Utils.cpp)
+	set(NOGUI_SRCS ${NOGUI_SRCS} X11.cpp ../DolphinWX/X11Utils.cpp)
 endif()
 
 list(APPEND LIBS core uicommon)
