@@ -92,12 +92,18 @@ void Host_SetWiiMoteConnectionState(int _State) {}
 
 void Host_ShowVideoConfig(void*, const std::string&, const std::string&) {}
 
+#if HAVE_GLFW
+#include "DolphinNoGUI/GLFW.h"
+#endif
 #if HAVE_X11
 #include "DolphinNoGUI/X11.h"
 #endif
 
 static Platform* GetPlatform()
 {
+#if HAVE_GLFW
+	return new PlatformGLFW();
+#endif
 #if HAVE_X11
 	return new PlatformX11();
 #endif
