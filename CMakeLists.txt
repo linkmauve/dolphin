@@ -220,11 +220,11 @@ endif(NOT MSVC)
 # gcc uses some optimizations which might break stuff without this flag
 add_definitions(-fno-strict-aliasing -fno-exceptions)
 
-check_and_add_flag(VISIBILITY_INLINES_HIDDEN -fvisibility-inlines-hidden)
-
-if(UNIX AND NOT APPLE)
-	check_and_add_flag(VISIBILITY_HIDDEN -fvisibility=hidden)
-endif()
+#check_and_add_flag(VISIBILITY_INLINES_HIDDEN -fvisibility-inlines-hidden)
+#
+#if(UNIX AND NOT APPLE)
+#	check_and_add_flag(VISIBILITY_HIDDEN -fvisibility=hidden)
+#endif()
 
 if(ENABLE_LTO)
 	check_and_add_flag(LTO -flto)
