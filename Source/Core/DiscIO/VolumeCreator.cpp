@@ -98,7 +98,7 @@ IVolume* CreateVolumeFromFilename(const std::string& _rFilename, u32 _PartitionG
 			SplitPath(_rFilename, nullptr, &Filename, &ext);
 			Filename += ext;
 			NOTICE_LOG(DISCIO, "%s does not have the Magic word for a gcm, wiidisc or wad file\n"
-						"Set Log Verbosity to Warning and attempt to load the game again to view the values", Filename.c_str());
+			                   "Set Log Verbosity to Warning and attempt to load the game again to view the values", Filename.c_str());
 	}
 
 	return nullptr;
