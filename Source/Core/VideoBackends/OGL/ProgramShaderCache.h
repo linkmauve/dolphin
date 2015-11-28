@@ -59,8 +59,10 @@ struct SHADER
 	SHADER() : glprogid(0) { }
 	void Destroy()
 	{
-		glDeleteProgram(glprogid);
-		glprogid = 0;
+		if (glprogid > 0) {
+			glDeleteProgram(glprogid);
+			glprogid = 0;
+		}
 	}
 	GLuint glprogid; // OpenGL program id
 
