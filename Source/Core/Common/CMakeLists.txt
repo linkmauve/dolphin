@@ -18,6 +18,7 @@ set(SRCS Analytics.cpp
          Network.cpp
          PcapFile.cpp
          PerformanceCounter.cpp
+         Image.cpp
          Profiler.cpp
          SettingsHandler.cpp
          SDCardUtil.cpp
