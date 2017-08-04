@@ -908,7 +908,7 @@ TextureCacheBase::TCacheEntry* TextureCacheBase::Load(const u32 stage)
   return ReturnEntry(stage, entry);
 }
 
-void TextureCacheBase::CopyRenderTargetToTexture(u32 dstAddr, unsigned int dstFormat, u32 dstStride,
+void TextureCacheBase::CopyRenderTargetToTexture(u32 dstAddr, u32 dstFormat, u32 dstStride,
                                                  bool is_depth_copy, const EFBRectangle& srcRect,
                                                  bool isIntensity, bool scaleByHalf)
 {
@@ -982,6 +982,7 @@ void TextureCacheBase::CopyRenderTargetToTexture(u32 dstAddr, unsigned int dstFo
   unsigned int cbufid = UINT_MAX;
   u32 srcFormat = bpmem.zcontrol.pixel_format;
   bool efbHasAlpha = srcFormat == PEControl::RGBA6_Z24;
+  u32 dst_format_origin = dstFormat;
 
   if (is_depth_copy)
   {
@@ -1375,7 +1376,8 @@ void TextureCacheBase::CopyRenderTargetToTexture(u32 dstAddr, unsigned int dstFo
       entry->SetEfbCopy(dstStride);
       entry->is_custom_tex = false;
 
-      CopyEFBToCacheEntry(entry, is_depth_copy, srcRect, scaleByHalf, cbufid, colmat);
+      CopyEFBToCacheEntry(entry, is_depth_copy, srcRect, scaleByHalf, cbufid, colmat,
+                          dst_format_origin, isIntensity);
 
       u64 hash = entry->CalculateHash();
       entry->SetHashes(hash, hash);

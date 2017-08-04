@@ -130,9 +130,8 @@ public:
   static void InvalidateAllBindPoints() { valid_bind_points.reset(); }
   static bool IsValidBindPoint(u32 i) { return valid_bind_points.test(i); }
   void BindTextures();
-  void CopyRenderTargetToTexture(u32 dstAddr, unsigned int dstFormat, u32 dstStride,
-                                 bool is_depth_copy, const EFBRectangle& srcRect, bool isIntensity,
-                                 bool scaleByHalf);
+  void CopyRenderTargetToTexture(u32 dstAddr, u32 dstFormat, u32 dstStride, bool is_depth_copy,
+                                 const EFBRectangle& srcRect, bool isIntensity, bool scaleByHalf);
 
   virtual void ConvertTexture(TCacheEntry* entry, TCacheEntry* unconverted, void* palette,
                               TlutFormat format) = 0;
@@ -199,7 +198,8 @@ private:
 
   virtual void CopyEFBToCacheEntry(TCacheEntry* entry, bool is_depth_copy,
                                    const EFBRectangle& src_rect, bool scale_by_half,
-                                   unsigned int cbuf_id, const float* colmat) = 0;
+                                   unsigned int cbuf_id, const float* colmat, u32 dst_format,
+                                   bool is_intensity) = 0;
 
   // Removes and unlinks texture from texture cache and returns it to the pool
   TexAddrCache::iterator InvalidateTexture(TexAddrCache::iterator t_iter);
