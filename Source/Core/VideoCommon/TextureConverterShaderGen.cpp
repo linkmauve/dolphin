@@ -38,6 +38,16 @@ ShaderCode GenerateTextureConverterShaderCode(APIType ApiType,
   ColorMask[0] = ColorMask[1] = ColorMask[2] = ColorMask[3] = 255.0f;
   ColorMask[4] = ColorMask[5] = ColorMask[6] = ColorMask[7] = 1.0f / 255.0f;
 
+  out.Write(
+      "SAMPLER_BINDING(9) uniform sampler2DArray samp9;\n"
+      "in vec3 f_uv0;\n"
+      "out vec4 ocol0;\n"
+      "void main(){\n"
+      "	vec4 texcol = texture(samp9, %s);\n",
+      uid_data->is_depth_copy ?
+          (g_ActiveConfig.bStereoEFBMonoDepth ? "vec3(f_uv0.xy, 0.0)" : "vec3(f_uv0.xy, f_uv0.z)") :
+          "f_uv0");
+
   if (uid_data->is_depth_copy)
   {
     switch (uid_data->dst_format)
@@ -232,23 +242,17 @@ ShaderCode GenerateTextureConverterShaderCode(APIType ApiType,
     }
   }
 
-  out.Write("SAMPLER_BINDING(9) uniform sampler2DArray samp9;\n"
-            "in vec3 f_uv0;\n"
-            "out vec4 ocol0;\n"
-            "const vec4 colmat[7] = {\n");
-
+  out.Write("	const vec4 colmat[7] = {\n");
   for (int i = 0; i < 7; i++)
   {
-    out.Write("	vec4(%f, %f, %f, %f)%s\n", colmat[i * 4 + 0], colmat[i * 4 + 1], colmat[i * 4 + 2],
+    out.Write("		vec4(%f, %f, %f, %f)%s\n", colmat[i * 4 + 0], colmat[i * 4 + 1], colmat[i * 4 + 2],
               colmat[i * 4 + 3], i < 7 ? "," : "");
   }
-  out.Write("};\n");
+  out.Write("	};\n");
 
   if (uid_data->is_depth_copy)
   {
-    out.Write("void main(){\n"
-              "	vec4 texcol = texture(samp9, vec3(f_uv0.xy, %s));\n"
-              "	int depth = int(texcol.x * 16777216.0);\n"
+    out.Write("	int depth = int(texcol.x * 16777216.0);\n"
 
               // Convert to Z24 format
               "	ivec4 workspace;\n"
@@ -260,20 +264,14 @@ ShaderCode GenerateTextureConverterShaderCode(APIType ApiType,
               "	workspace.a = (depth >> 16) & 0xF0;\n"
 
               // Normalize components to [0.0..1.0]
-              "	texcol = vec4(workspace) / 255.0;\n"
-
-              "	ocol0 = texcol * mat4(colmat[0], colmat[1], colmat[2], colmat[3]) + colmat[4];\n"
-              "}\n",
-              g_ActiveConfig.bStereoEFBMonoDepth ? "0.0" : "f_uv0.z");
+              "	texcol = vec4(workspace) / 255.0;\n");
   }
   else
   {
-    out.Write("void main(){\n"
-              "	vec4 texcol = texture(samp9, f_uv0);\n"
-              "	texcol = floor(texcol * colmat[5]) * colmat[6];\n"
-              "	ocol0 = texcol * mat4(colmat[0], colmat[1], colmat[2], colmat[3]) + colmat[4];\n"
-              "}\n");
+    out.Write("	texcol = floor(texcol * colmat[5]) * colmat[6];\n");
   }
+  out.Write("	ocol0 = texcol * mat4(colmat[0], colmat[1], colmat[2], colmat[3]) + colmat[4];\n"
+            "}\n");
 
   return out;
 }
