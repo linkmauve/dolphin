@@ -41,6 +41,7 @@ struct SCPFifoStruct
   std::atomic<u32> bFF_LoWatermark;
   std::atomic<u32> bFF_HiWatermark;
 
+  void Init();
   void DoState(PointerWrap& p);
 };
 
